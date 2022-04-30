@@ -162,28 +162,30 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
         raise NotImplementedError()
 
     def _init_env_variables(self):
-        """Inits variables needed to be initialised each time we reset at the start
-        of an episode.
-        """
+        '''
+            Inits variables needed to be initialised each time we reset at the start
+            of an episode.
+        '''
         raise NotImplementedError()
 
     def _compute_reward(self, observations, done):
-        """Calculates the reward to give based on the observations given.
-        """
+        '''
+            Calculates the reward to give based on the observations given.
+        '''
         raise NotImplementedError()
 
     def _set_action(self, action):
-        """Applies the given action to the simulation.
-        """
+        '''
+            Applies the given action to the simulation.
+        '''
         raise NotImplementedError()
 
     def _get_obs(self):
         raise NotImplementedError()
 
     def _is_done(self, observations):
-        """Checks if episode done based on observations given.
-        """
+        '''
+            Checks if episode done based on observations given.
+        '''
         raise NotImplementedError()
-
-    # Methods that the Robot Environment will need.
-    # ----------------------------
+    
