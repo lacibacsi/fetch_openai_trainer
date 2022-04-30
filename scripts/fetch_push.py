@@ -29,7 +29,8 @@ register(
 )
 
 
-class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
+# class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
+class FetchPushEnv(fetch_env.FetchEnv):
 
     def __init__(self):
         self.obj_positions = Obj_Pos(object_name="demo_cube")
@@ -38,10 +39,12 @@ class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
         self.get_params()
 
         # TODO: why do we need this?
-        fetch_env.FetchEnv.__init__(self)
-        gymutils.EzPickle.__init__(self)
+        # fetch_env.FetchEnv.__init__(self)
+        # gymutils.EzPickle.__init__(self)
 
-        self.gazebo.unpauseSim()
+        # moving unpause to the robot environment
+        # the task env. should not be concerned with it
+        # self.gazebo.unpauseSim()
 
         # description - explanation why?
         self.action_space = spaces.Box(
@@ -67,16 +70,21 @@ class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
 
         self.observation_space = spaces.Box(low, high)
 
+        super(FetchPushEnv, self).__init__()
+
+        self.gazebo.unpauseSim()
+
         # reading current pos? dummy call?
         obs = self._get_obs()
 
     # ----------------------------------------------------
     # Local methods for the Task Environment
     # ----------------------------------------------------
+
     def get_params(self):
         '''
             get configuration parameters
-            called by the constuctor            
+            called by the constuctor
         '''
 
         self.sim_time = rospy.get_time()
@@ -113,7 +121,7 @@ class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
 
     def calc_dist(self, p1, p2):
         '''
-            returns the distance between 2 points            
+            returns the distance between 2 points
             d = ((2 - 1)2 + (1 - 1)2 + (2 - 0)2)1/2
             or
             d = square root( (x1 -x2)^2 + (y1 - y2)^2 + (z1 - z2)^2 )
@@ -216,10 +224,12 @@ class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
             And the speed of cube
             Orientation for the moment is not considered
         '''
-        self.gazebo.unpauseSim()
+        # self.gazebo.unpauseSim()
 
         # ee pose is returned by the robot /gazebo env...
         grip_pose = self.get_ee_pose()
+        # ee_array_pose = self.get_ee_pose()
+        # ee_array_pose = super.get_ee_pose()
         ee_array_pose = [grip_pose.position.x,
                          grip_pose.position.y, grip_pose.position.z]
 
@@ -248,7 +258,7 @@ class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
             It will also end if it reaches its goal.
         '''
 
-        #distance = observations[0]
+        # distance = observations[0]
         speed = observations[1]
 
         # checking if the last result is false -> set by set_action when applying the position to trajectory

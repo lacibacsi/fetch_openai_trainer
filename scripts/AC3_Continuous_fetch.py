@@ -268,7 +268,7 @@ class WorkerAgent(Thread):
 
 def main():
     # the below 2 lines are the modification of the original file
-    rospy.init_node("train_fetch_her")
+    rospy.init_node("train_fetch_here")
     env_name = 'FetchPush-v0'
     agent = Agent(env_name)
     agent.train()

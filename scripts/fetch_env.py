@@ -2,11 +2,13 @@
 
 import rospy
 from openai_ros import robot_gazebo_env
+from openai_ros import robot_gazebo_env_goal
 
-#from std_msgs.msg import Float64
+from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
-#from nav_msgs.msg import Odometry
+from nav_msgs.msg import Odometry
 import geometry_msgs.msg
+from fetch_moveit_config.fetch_commander import FetchCommander
 
 
 JOINT_STATES_SUBSCRIBER = '/joint_states'
@@ -30,6 +32,8 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
 
         # Internal Vars
         reset_controls_bool = False
+        # creating a fetch commander as well
+        self.fetch_commander_obj = FetchCommander()
 
         # Variables that we give through the constructor.
         # TODO? why do we pass empty namespace?
@@ -72,7 +76,7 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
 
         self.joints = None
 
-        while self.joints in None and not rospy.is_shutdown():
+        while self.joints is None and not rospy.is_shutdown():
             try:
                 self.joints = rospy.wait_for_message(
                     JOINT_STATES_SUBSCRIBER, JointState, timeout=1.0)
@@ -88,7 +92,7 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
 
     def joints_callback(self, data):
         '''
-            Method that the saubscriber calls - reads published joint state. 
+            Method that the saubscriber calls - reads published joint state.
             Just store it so it can be resused
         '''
         self.joints = data
@@ -129,7 +133,7 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
         position[4] = initial_qpos["joint4"]
         position[5] = initial_qpos["joint5"]
         position[6] = initial_qpos["joint6"]
-        #position = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        # position = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         try:
             self.fetch_commander_obj.move_joints_traj(position)
             result = True
@@ -141,7 +145,10 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
 
     def get_ee_pose(self):
 
+        # changing to return an array, fetch env does not have the fetch commander, not should it have it
         gripper_pose = self.fetch_commander_obj.get_ee_pose()
+        # ee_array_pose = [gripper_pose.position.x,
+        #                 gripper_pose.position.y, gripper_pose.position.z]
 
         return gripper_pose
 
@@ -157,8 +164,9 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
     # ----------------------------
 
     def _set_init_pose(self):
-        """Sets the Robot in its init pose
-        """
+        '''
+            Sets the Robot in its init pose
+        '''
         raise NotImplementedError()
 
     def _init_env_variables(self):
@@ -188,4 +196,3 @@ class FetchEnv(robot_gazebo_env.RobotGazeboEnv):
             Checks if episode done based on observations given.
         '''
         raise NotImplementedError()
-    
