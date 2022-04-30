@@ -1,4 +1,4 @@
-#! /usr/env/bin python
+#! /usr/bin/env python
 
 import rospy
 from gazebo_msgs.srv import GetWorldProperties, GetModelState

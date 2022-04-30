@@ -1,4 +1,4 @@
-#! /usr/env/bin python
+#! /usr/bin/env python
 
 '''
     Fetch task environment based (taken from) Unit 8 from the construct open AI course
@@ -7,7 +7,7 @@
 # generic, system, ros, and gym
 import math
 import rospy
-from gym import utils
+from gym import utils as gymutils
 from gym import spaces
 from gym.envs.registration import register
 
@@ -29,7 +29,7 @@ register(
 )
 
 
-class FetchPushEnv(fetch_env.FetchEnv, utils.EZPickle):
+class FetchPushEnv(fetch_env.FetchEnv, gymutils.EzPickle):
 
     def __init__(self):
         self.obj_positions = Obj_Pos(object_name="demo_cube")
@@ -39,7 +39,7 @@ class FetchPushEnv(fetch_env.FetchEnv, utils.EZPickle):
 
         # TODO: why do we need this?
         fetch_env.FetchEnv.__init__(self)
-        utils.EzPickle.__init__(self)
+        gymutils.EzPickle.__init__(self)
 
         self.gazebo.unpauseSim()
 
